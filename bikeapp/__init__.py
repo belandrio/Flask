@@ -5,6 +5,7 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from bikeapp.config import Config
 from flask_migrate import Migrate
+from elasticsearch import Elasticsearch
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -23,6 +24,8 @@ def create_app(config_class=Config):
     bcrypt.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
+    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
+        if app.config['ELASTICSEARCH_URL'] else None
 
     from bikeapp.users.routes import users
     from bikeapp.posts.routes import posts
